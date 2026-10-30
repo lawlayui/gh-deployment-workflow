@@ -1,35 +1,22 @@
-name: Deploy Static Content to Pages
+name: Deploy to AWS EC2
 
 on:
   push:
     branches: ["main"]
-    paths:
-      - 'index.html'
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-      - uses: actions/checkout@4
+        uses: actions/checkout@v4
 
-      - name: Executing remote ssh commands using ssh key 
-      - uses: appleboy/ssh-action@master
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.AWS_HOST }} 
-          username: admin
+          host: ${{ secrets.AWS_HOST }}
+          username: admin 
           key: ${{ secrets.AWS_SSH_KEY }}
           script: |
             cd /var/www/lawlayui.com
             git pull origin main
-
-    
