@@ -17,22 +17,19 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout Code
+      - uses: actions/checkout@4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Executing remote ssh commands using ssh key 
+      - uses: appleboy/ssh-action@master
         with:
-          path: '.'
+          host: ${{ secrets.AWS_HOST }} 
+          username: admin
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            cd /var/www/lawlayui.com
+            git pull origin main
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    
